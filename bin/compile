@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+# ===== Helpers =====
+
 def self.fuck(name, *whatevers)
   puts "\e[31m#{name}\e[0m"
   puts whatevers.join("\n").gsub(/^/, '  ')
@@ -9,7 +11,11 @@ def self.________________________________________
   puts "\e[33m________________________________________\e[0m"
 end
 
-###################################################################
+def self.files_in(dir)
+  Dir.entries(dir) - ['.', '..']
+end
+
+# ===== Fuck everything =====
 
 fuck 'The fuck everything script',
      'AKA what the fuck is going on up there, Heroku?'
@@ -23,30 +29,27 @@ ________________________________________
 
 fuck 'ARGV:', ARGV.inspect
 ARGV.each.with_index do |arg|
-  fuck "Files in #{arg.inspect}", Dir.entries(arg).map(&:inspect)
+  fuck "Files in #{arg.inspect}", files_in(arg).map(&:inspect)
 end
 ________________________________________
 
 
 if ARGV[2]
-  align_len = 0
-  fuck "Values of files in ARGV[2] aka #{ARGV[2]}",
-       Dir.entries(ARGV[2])
-          .reject { |entry| ['.', '..'].include?(entry) }
-          .tap { |entries| align_len = entries.map(&:length).max }
-          .map { |filename|
-            filepath = File.join ARGV[2], filename
-            pretty_filename = "\e[36m%-#{align_len+1}s\e[0m" % (filename+":")
-            if Dir.exist? filepath
-              "#{pretty_filename} this is a directory -.-"
-            else
-              "#{pretty_filename}\n#{File.read(filepath).strip.gsub(/^/, '  ')}"
-            end
-          }
+  filenames = files_in ARGV[2]
+  align_len = filenames.map(&:length).max
+  to_print  = filenames.map do |filename|
+    filepath = File.join ARGV[2], filename
+    pretty_filename = "\e[36m%-#{align_len+1}s\e[0m" % (filename+":")
+    if Dir.exist? filepath
+      "#{pretty_filename} \e[33mthis is a directory -.-\e[0m"
+    else
+      "#{pretty_filename}\n#{File.read(filepath).strip.gsub(/^/, '  ')}"
+    end
+  end
+  fuck "Values of files in ARGV[2] aka #{ARGV[2]}", to_print
 else
   fuck "There is no ARGV[2]!"
 end
-
 ________________________________________
 
 
