@@ -1,4 +1,57 @@
-#!/bin/sh
+#!/usr/bin/env ruby
 
-echo "FuckEverything"
-exit 0
+def self.fuck(name, *whatevers)
+  puts "\e[31m#{name}\e[0m"
+  puts whatevers.join("\n").gsub(/^/, '  ')
+end
+
+def self.________________________________________
+  puts "\e[33m________________________________________\e[0m"
+end
+
+###################################################################
+
+fuck 'The fuck everything script',
+     'AKA what the fuck is going on up there, Heroku?'
+________________________________________
+
+
+require 'pp'
+fuck 'ENV:', ENV.pretty_inspect
+________________________________________
+
+
+fuck 'ARGV:', ARGV.inspect
+ARGV.each.with_index do |arg|
+  fuck "Files in #{arg.inspect}", Dir.entries(arg).map(&:inspect)
+end
+________________________________________
+
+
+if ARGV[2]
+  align_len = 0
+  fuck "Values of files in ARGV[2] aka #{ARGV[2]}",
+       Dir.entries(ARGV[2])
+          .tap { |entries| align_len = entries.map(&:length).max }
+          .map { |filename|
+            filepath = File.join ARGV[2], filename
+            pretty_filename = "\e[36m%-#{align_len}s:\e[0m" % filename
+            if Dir.exist? filepath
+              "#{pretty_filename} this is a directory -.-"
+            else
+              "#{pretty_filename}\n#{File.read(filepath).strip.gsub(/^/, '  ')}"
+            end
+          }
+else
+  fuck "There is no ARGV[2]!"
+end
+
+________________________________________
+
+
+Thread.new do
+  fuck 'STDIN:', $stdin.read.inspect
+  exit 0
+end
+sleep 1
+fuck 'STDIN:', 'Blocked, apparently'
