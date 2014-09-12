@@ -32,10 +32,11 @@ if ARGV[2]
   align_len = 0
   fuck "Values of files in ARGV[2] aka #{ARGV[2]}",
        Dir.entries(ARGV[2])
+          .reject { |entry| ['.', '..'].include?(entry) }
           .tap { |entries| align_len = entries.map(&:length).max }
           .map { |filename|
             filepath = File.join ARGV[2], filename
-            pretty_filename = "\e[36m%-#{align_len}s:\e[0m" % filename
+            pretty_filename = "\e[36m%-#{align_len+1}s\e[0m" % (filename+":")
             if Dir.exist? filepath
               "#{pretty_filename} this is a directory -.-"
             else
