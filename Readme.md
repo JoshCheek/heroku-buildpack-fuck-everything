@@ -1,3 +1,9 @@
+# THIS CODE WORK(S|ED) FOR ITS PURPOSE, BUT I AM NOT MAINTAINING IT
+
+Eventually gave up on Heroku buildpacks, I'm trying other hosts.
+
+-----
+
 A Heroku buildpack to figure out what the fuck is going on up there.
 
 I'm using it like this:
@@ -7,7 +13,7 @@ $ heroku buildpacks:list | grep multi
 ddollar/multi
 vizify/multi
 
-$ heroku buildpacks:set vizify/multi
+$ heroku buildpacks:set vizify/multi # <-- this buildpack assumes you're using nodejs, btw, so is completley untenable for its purpose
 Modifying BUILDPACK_URL for turingschool-moi... done
 
 $ cat .buildpacks
